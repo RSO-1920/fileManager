@@ -1,0 +1,9 @@
+kumuluzee:
+  name: rso-channels
+  version: 1.0.0
+  server:
+    base-url: http://localhost:8088/
+    http:
+      port: 8088
+  env:
+    name: dev
