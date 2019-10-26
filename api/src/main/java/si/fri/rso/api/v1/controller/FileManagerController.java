@@ -1,6 +1,5 @@
 package si.fri.rso.api.v1.controller;
 
-
 import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
@@ -27,7 +26,7 @@ public class FileManagerController {
     public File getfile(){
 
         //Your local disk path where you want to store the file
-        String uploadedFileLocation = "C:\\Users\\urosz\\Downloads\\playlist.m3u8" ;
+        String uploadedFileLocation = "playlist.m3u8" ;
         System.out.println(uploadedFileLocation);
         // save it
         File  objFile=new File(uploadedFileLocation);
@@ -40,16 +39,14 @@ public class FileManagerController {
     }
 
 
-
     @POST
     @Path("postFile")
     public void postFile() {
-        // String contentType = "multipart/mixed";
         File newFile = getfile();
         MultiPart multiPart = null;
 
         //TODO: PREBERI SERVER URL IZ CONFIGA
-        String serverURL = "http://localhost:8088/v1/upload/getter";
+        String serverURL = "http://localhost:8089/v1/upload/getter";
         //TODO: KLIČI SERVICE S TRY_CATCH
         try {
             Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
@@ -94,9 +91,9 @@ public class FileManagerController {
                                @FormDataParam("file") FormDataContentDisposition fileDetails) {
 
         System.out.println("\n\n..CandidateServlet.uploadImage()");
-        System.out.println(fileDetails.getFileName());
+        System.out.println("writen-"+fileDetails.getFileName());
 
-        writeToFile(uploadedInputStream, fileDetails.getFileName());
+        writeToFile(uploadedInputStream,  "writen-"+fileDetails.getFileName() );
 
         String output = "File uploaded to : " + fileDetails.getFileName();
 
@@ -107,8 +104,7 @@ public class FileManagerController {
     private void writeToFile(InputStream uploadedInputStream,
                              String uploadedFileLocation) {
         try {
-            OutputStream out = new FileOutputStream(new File(
-                    uploadedFileLocation));
+            OutputStream out;
             int read = 0;
             byte[] bytes = new byte[1024];
 
