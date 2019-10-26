@@ -10,6 +10,7 @@
         <module>lib</module>
         <module>api</module>
         <module>config</module>
+        <module>services</module>
     </modules>
     <packaging>pom</packaging>
 

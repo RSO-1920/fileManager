@@ -3,6 +3,7 @@ package si.fri.rso.api.v1.controller;
 import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import si.fri.rso.config.FileManagerConfigProperties;
+import si.fri.rso.services.FileManagerBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +29,9 @@ public class FileManagerController {
     @Inject
     private FileManagerConfigProperties fileManagerConfigProperties;
 
+    @Inject
+    private FileManagerBean fileManagerBean;
+
     public File getfile(){
 
         //Your local disk path where you want to store the file
@@ -51,6 +55,8 @@ public class FileManagerController {
         System.out.println("Configuration properties: ");
         System.out.println("Catalog api: " + this.fileManagerConfigProperties.getCatalogApiUrl());
         System.out.println("FileStorage api: " + this.fileManagerConfigProperties.getFileStorageApiUrl());
+        System.out.println();
+        fileManagerBean.uploadingNewFile();
         System.out.println();
 
         File newFile = getfile();
