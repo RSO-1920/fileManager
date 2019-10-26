@@ -2,8 +2,10 @@ package si.fri.rso.api.v1.controller;
 
 import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import si.fri.rso.config.FileManagerConfigProperties;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,6 +24,9 @@ import java.io.*;
 
 // prebereš file, pošlješ penci, pošlješ njegov info zorotu
 public class FileManagerController {
+
+    @Inject
+    private FileManagerConfigProperties fileManagerConfigProperties;
 
     public File getfile(){
 
@@ -42,6 +47,12 @@ public class FileManagerController {
     @POST
     @Path("postFile")
     public void postFile() {
+
+        System.out.println("Configuration properties: ");
+        System.out.println("Catalog api: " + this.fileManagerConfigProperties.getCatalogApiUrl());
+        System.out.println("FileStorage api: " + this.fileManagerConfigProperties.getFileStorageApiUrl());
+        System.out.println();
+
         File newFile = getfile();
         MultiPart multiPart = null;
 

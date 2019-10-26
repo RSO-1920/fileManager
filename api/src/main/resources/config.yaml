@@ -7,3 +7,12 @@ kumuluzee:
     base-url: http://localhost:8089/
     http:
       port: 8089
+  config:
+    start-retry-delay-ms: 500
+    max-retry-delay-ms: 900000
+    etcd:
+      hosts: http://localhost:2379
+
+rest-config:
+  catalog-api-url: http://localhost:8088/
+  file-storage-api-url: http://localhost:8085/
