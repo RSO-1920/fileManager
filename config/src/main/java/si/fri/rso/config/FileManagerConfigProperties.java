@@ -22,8 +22,8 @@ public class FileManagerConfigProperties {
         return deleteCatalogApiUrl;
     }
 
-    public void setDeletecatalogApiUrl(String deletecatalogApiUrl) {
-        this.deleteCatalogApiUrl = deletecatalogApiUrl;
+    public void setDeleteCatalogApiUrl(String deleteCatalogApiUrl) {
+        this.deleteCatalogApiUrl = deleteCatalogApiUrl;
     }
 
     public String getCatalogApiUrl() {
