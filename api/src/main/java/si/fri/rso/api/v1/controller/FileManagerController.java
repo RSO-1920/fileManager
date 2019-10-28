@@ -7,11 +7,9 @@ import si.fri.rso.services.FileManagerBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotEmpty;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -23,19 +21,17 @@ import java.io.*;
 @ApplicationScoped
 @Path("/upload")
 
-// prebereš file, pošlješ penci, pošlješ njegov info zorotu
 public class FileManagerController {
-
     @Inject
     private FileManagerConfigProperties fileManagerConfigProperties;
-
     @Inject
     private FileManagerBean fileManagerBean;
 
-    public File getfile(){
+    private Client httpClient;
 
+    private File getfile(){
         //Your local disk path where you want to store the file
-        String uploadedFileLocation = "playlist.m3u8" ;
+        String uploadedFileLocation = "C:\\Users\\Jan\\Desktop\\FAKS\\RAČUNALNIŠKE STORITVE V OBLAKU\\koda\\fileManager\\pom.xml" ;
         System.out.println(uploadedFileLocation);
         // save it
         File  objFile=new File(uploadedFileLocation);
@@ -51,7 +47,6 @@ public class FileManagerController {
     @POST
     @Path("postFile")
     public void postFile() {
-
         System.out.println("Configuration properties: ");
         System.out.println("Catalog api: " + this.fileManagerConfigProperties.getCatalogApiUrl());
         System.out.println("FileStorage api: " + this.fileManagerConfigProperties.getFileStorageApiUrl());
@@ -64,6 +59,7 @@ public class FileManagerController {
 
         //TODO: PREBERI SERVER URL IZ CONFIGA
         String serverURL = "http://localhost:8089/v1/upload/getter";
+
         //TODO: KLIČI SERVICE S TRY_CATCH
         try {
             Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
@@ -136,6 +132,61 @@ public class FileManagerController {
         }
     }
 
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response DeleteFile() {
+        Integer FileId = 1;
+        System.out.println("Deleting file: "+ FileId);
+
+        //POST KLIC penca
+        if (deleteFile(FileId, "storage")){
+            //POST KLIC zoro
+            if (deleteFile(FileId, "catalog")){
+                return Response.ok("File Deleted! ").build();
+            }
+            else{
+                return Response.ok("To ni ok!! \n Zoro ne vrne true").build();
+            }
+        }
+        else{
+            return Response.ok("To ni ok!! \n Penca ne vrne true").build();
+        }
+
+    }
+
+    private Boolean deleteFile(Integer FileId, String path) {
+        String target = "";
+        if (path.equals("storage")){
+            target = this.fileManagerConfigProperties.getFileStorageApiUrl();
+        }
+        else if (path.equals("catalog")){
+            target = this.fileManagerConfigProperties.getCatalogApiUrl();
+        }
+        System.out.println("Target je "+ path);
+        System.out.println("Ciljam: "+ target);
+
+        try{
+            Response success = httpClient
+                    .target(target)
+                    .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(FileId, MediaType.APPLICATION_JSON_TYPE));
+
+            if (success.readEntity(String.class).equals("true")) {
+                System.out.println("S3 deleted a file");
+                //return Response.ok("File delition success").build();
+                return true;
+            } else {
+                System.out.println("File delition failed");
+                //return Response.ok("File delition file").build();
+                return false;
+            }
+        }catch (WebApplicationException | ProcessingException e) {
+            e.printStackTrace();
+            System.out.println("api for S3 not reachable");
+            return false;
+        }
+    }
 }
 
 
