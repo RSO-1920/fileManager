@@ -67,7 +67,7 @@ public class FileManagerBean {
 
         try{
             Response success = httpClient
-                    .target(fileManagerConfigProperties.getCatalogApiUrl() + "v1/file")
+                    .target(fileManagerConfigProperties.getCatalogApiUrl())
                     .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
 
             if (success.getStatus() == 200) {
@@ -91,7 +91,7 @@ public class FileManagerBean {
     public Boolean deleteFile(Integer FileId, String path) {
         String target = "";
         if (path.equals("storage")){
-            target = this.fileManagerConfigProperties.getFileStorageApiUrl() + FileId;
+            target = this.fileManagerConfigProperties.getFileStorageApiUrl() + "/" + FileId;
         }
         else if (path.equals("catalog")){
             target = this.fileManagerConfigProperties.getDeletecatalogApiUrl() +
@@ -105,18 +105,16 @@ public class FileManagerBean {
                     .target(target)
                     .request(MediaType.APPLICATION_JSON_TYPE).delete();
 
-            if (success.readEntity(String.class).equals("true")) {
-                System.out.println("S3 deleted a file");
-                //return Response.ok("File delition success").build();
+            if (success.getStatus() == 200) {
+                System.out.println("File deletion success: " + path);
                 return true;
             } else {
-                System.out.println("File delition failed");
-                //return Response.ok("File delition file").build();
+                System.out.println("File delition failed: " + path);
                 return false;
             }
         }catch (WebApplicationException | ProcessingException e) {
             e.printStackTrace();
-            System.out.println("api for S3 not reachable");
+            System.out.println("api not reachable: " + path);
             return false;
         }
     }

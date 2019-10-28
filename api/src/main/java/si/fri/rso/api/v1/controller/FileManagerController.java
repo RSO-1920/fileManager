@@ -1,19 +1,12 @@
 package si.fri.rso.api.v1.controller;
 
 import org.glassfish.jersey.media.multipart.*;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
-import si.fri.rso.config.FileManagerConfigProperties;
-import si.fri.rso.lib.responses.NewFileMetadata;
 import si.fri.rso.services.FileManagerBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;

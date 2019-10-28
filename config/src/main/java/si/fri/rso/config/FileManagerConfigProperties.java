@@ -9,21 +9,21 @@ import javax.enterprise.context.ApplicationScoped;
 @ConfigBundle("rest-config")
 public class FileManagerConfigProperties {
 
-    @ConfigValue(value = "catalog-api-url", watch = true)
+    @ConfigValue(value = "upload-catalog-api-url", watch = true)
     private String catalogApiUrl;
 
-    @ConfigValue(value = "file-storage-api-url", watch = true)
+    @ConfigValue(value = "upload-file-storage-api-url", watch = true)
     private  String fileStorageApiUrl;
 
     @ConfigValue(value = "delete-catalog-api-url", watch = true)
-    private String deletecatalogApiUrl;
+    private String deleteCatalogApiUrl;
 
     public String getDeletecatalogApiUrl() {
-        return deletecatalogApiUrl;
+        return deleteCatalogApiUrl;
     }
 
     public void setDeletecatalogApiUrl(String deletecatalogApiUrl) {
-        this.deletecatalogApiUrl = deletecatalogApiUrl;
+        this.deleteCatalogApiUrl = deletecatalogApiUrl;
     }
 
     public String getCatalogApiUrl() {
