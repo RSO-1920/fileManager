@@ -14,5 +14,8 @@ kumuluzee:
       hosts: http://localhost:2379
 
 rest-config:
-  catalog-api-url: http://localhost:8088/
-  file-storage-api-url: http://localhost:8080/v1/fileTransfer/storeFile
+  upoad-catalog-api-url: http://localhost:8088/
+  upload-file-storage-api-url: http://localhost:8080/v1/fileTransfer/storeFile
+
+  delete-catalog-api-url: http://localhost:8088/v1/file
+  delete-file-storage-api-url: http://localhost:8080/v1/fileTransfer/storeFile

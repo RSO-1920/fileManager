@@ -15,6 +15,17 @@ public class FileManagerConfigProperties {
     @ConfigValue(value = "file-storage-api-url", watch = true)
     private  String fileStorageApiUrl;
 
+    @ConfigValue(value = "delete-catalog-api-url", watch = true)
+    private String deletecatalogApiUrl;
+
+    public String getDeletecatalogApiUrl() {
+        return deletecatalogApiUrl;
+    }
+
+    public void setDeletecatalogApiUrl(String deletecatalogApiUrl) {
+        this.deletecatalogApiUrl = deletecatalogApiUrl;
+    }
+
     public String getCatalogApiUrl() {
         return this.catalogApiUrl;
     }

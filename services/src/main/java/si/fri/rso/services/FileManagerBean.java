@@ -50,13 +50,10 @@ public class FileManagerBean {
         Integer user = userChannel[0];
         Integer channel = userChannel[1];
 
-        System.out.println("REPORT:");
-        System.out.println(filePath);
-        System.out.println(fileDetails.getFileName());
-        System.out.println(user);
-        System.out.println(channel);
-
-       file.delete();
+        boolean isDeleted = file.delete();
+        if(!isDeleted){
+           System.out.println("File was not deleted!");
+        }
 
         if (filePath != null){
             NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel);
@@ -87,21 +84,26 @@ public class FileManagerBean {
         }
     }
 
-
+    //  1. upload zoro
+    //  2. upload penca
+    //  3. delete zoro
+    //  4. delete penca
     public Boolean deleteFile(Integer FileId, String path) {
         String target = "";
         if (path.equals("storage")){
-            target = this.fileManagerConfigProperties.getFileStorageApiUrl();
+            target = this.fileManagerConfigProperties.getFileStorageApiUrl() + FileId;
         }
         else if (path.equals("catalog")){
-            target = this.fileManagerConfigProperties.getCatalogApiUrl();
+            target = this.fileManagerConfigProperties.getDeletecatalogApiUrl() +
+                    "/" +
+                    FileId;
         }
         System.out.println("Target je "+ path);
         System.out.println("Ciljam: "+ target);
         try{
             Response success = httpClient
                     .target(target)
-                    .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(FileId, MediaType.APPLICATION_JSON_TYPE));
+                    .request(MediaType.APPLICATION_JSON_TYPE).delete();
 
             if (success.readEntity(String.class).equals("true")) {
                 System.out.println("S3 deleted a file");

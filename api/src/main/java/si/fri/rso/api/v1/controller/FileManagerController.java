@@ -54,21 +54,22 @@ public class FileManagerController {
     @Path("delete")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response DeleteFile() {
-        Integer FileId = 1;
-        System.out.println("Deleting file: "+ FileId);
-        //POST KLIC penca
-        if (fileManagerBean.deleteFile(FileId, "storage")){
-            //POST KLIC zoro
-            if (fileManagerBean.deleteFile(FileId, "catalog")){
-                return Response.ok("File Deleted! ").build();
+    public Response DeleteFile(@QueryParam("fileId") Integer fileId) {
+        System.out.println("FILEID: "+ fileId);
+        if (fileId == null){
+            return Response.status(444, "File id not found! ").build();
+        }
+        System.out.println("Deleting file: "+ fileId);
+        if (fileManagerBean.deleteFile(fileId, "catalog")){
+            if (fileManagerBean.deleteFile(fileId, "storage")){
+                return Response.ok("File Deleted!").build();
             }
             else{
-                return Response.status(402, "To ni ok!! \n Zoro ne vrne true").build();
+                return Response.status(400, "Error while deleting file in S3 storage!").build();
             }
         }
         else{
-            return Response.status(402, "To ni ok!! \n Penca ne vrne true").build();
+            return Response.status(400, "Error while deleting file metadata!").build();
         }
     }
 }
