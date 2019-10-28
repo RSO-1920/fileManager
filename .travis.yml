@@ -18,14 +18,14 @@ branches:
     - master
 
 env:
-  - DOCKER_IMAGE=rso1920/fileManager:1.0.0-SNAPSHOT-$TRAVIS_JOB_NUMBER
+  - DOCKER_IMAGE=rso1920/filemanager:1.0.0-SNAPSHOT-$TRAVIS_JOB_NUMBER
 
 script:
   - mvn clean package -U
   - docker build -t "$DOCKER_IMAGE" .
-  - docker tag rso1920/fileManager:1.0.0-SNAPSHOT-$TRAVIS_JOB_NUMBER rso1920/fileManager:latest
+  - docker tag rso1920/filemanager:1.0.0-SNAPSHOT-$TRAVIS_JOB_NUMBER rso1920/filemanager:latest
 
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker push "$DOCKER_IMAGE"
-  - docker push rso1920/fileManager:latest
+  - docker push rso1920/filemanager:latest
