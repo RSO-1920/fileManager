@@ -2,17 +2,31 @@ package si.fri.rso.services;
 
 import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import sun.security.util.IOUtils;
+import si.fri.rso.config.FileManagerConfigProperties;
+import si.fri.rso.lib.responses.NewFileMetadata;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.stream.FactoryConfigurationError;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 @ApplicationScoped
 public class FileManagerBean {
 
     @Inject RequestSenderBean requestSenderBean;
+
+    @Inject FileManagerConfigProperties fileManagerConfigProperties;
+
+    private Client httpClient;
 
     @PostConstruct
     private void init(){
@@ -23,8 +37,8 @@ public class FileManagerBean {
         System.out.println("Call upload file Bean");
     }
 
-    public Boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetails) {
-
+    public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetails,
+                              Integer [] userChannel) {
         File file = new File(fileDetails.getFileName());
 
         try {
@@ -32,10 +46,83 @@ public class FileManagerBean {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        String filePath =  requestSenderBean.sendFileToUploadOnS3(file);
+        //"c://bla//file.jpg"
 
-        boolean isSuccessUpload =  requestSenderBean.sendFileToUploadOnS3(file);
+        String [] nameType = fileDetails.getFileName().split("\\.");
 
-        return true;
+
+        String fileType = nameType[nameType.length-1];
+        Integer user = userChannel[0];
+        Integer channel = userChannel[1];
+
+        System.out.println("REPORT:");
+        System.out.println(filePath);
+        System.out.println(fileDetails.getFileName());
+        System.out.println(user);
+        System.out.println(channel);
+
+        if (filePath != null){
+            // Poslji post zoro
+            NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel);
+            boolean isSaved = saveMetadata(newFile);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean saveMetadata(NewFileMetadata newFile){
+
+        try{
+            Response success = httpClient
+                    .target(fileManagerConfigProperties.getCatalogApiUrl() + "/uploadMetadata")
+                    .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
+
+            if (success.getStatus() == 200) {
+                System.out.println("Meta data about file was uploaded");
+                return true;
+            } else {
+                System.out.println("Meta data about file was NOT uploaded");
+                return false;
+            }
+        }catch (WebApplicationException | ProcessingException e) {
+            e.printStackTrace();
+            System.out.println("api for metadata upload failed miserably");
+            return false;
+        }
+    }
+
+
+
+    public Boolean deleteFile(Integer FileId, String path) {
+        String target = "";
+        if (path.equals("storage")){
+            target = this.fileManagerConfigProperties.getFileStorageApiUrl();
+        }
+        else if (path.equals("catalog")){
+            target = this.fileManagerConfigProperties.getCatalogApiUrl();
+        }
+        System.out.println("Target je "+ path);
+        System.out.println("Ciljam: "+ target);
+        try{
+            Response success = httpClient
+                    .target(target)
+                    .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(FileId, MediaType.APPLICATION_JSON_TYPE));
+
+            if (success.readEntity(String.class).equals("true")) {
+                System.out.println("S3 deleted a file");
+                //return Response.ok("File delition success").build();
+                return true;
+            } else {
+                System.out.println("File delition failed");
+                //return Response.ok("File delition file").build();
+                return false;
+            }
+        }catch (WebApplicationException | ProcessingException e) {
+            e.printStackTrace();
+            System.out.println("api for S3 not reachable");
+            return false;
+        }
     }
 
 }

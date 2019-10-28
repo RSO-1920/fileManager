@@ -23,7 +23,7 @@ public class RequestSenderBean {
     @Inject
     FileManagerConfigProperties fileManagerConfigProperties;
 
-    boolean sendFileToUploadOnS3(File newFile){
+    String sendFileToUploadOnS3(File newFile){
         MultiPart multiPart = null;
         String serverURL = fileManagerConfigProperties.getFileStorageApiUrl();
 
@@ -43,15 +43,17 @@ public class RequestSenderBean {
             if (response.getStatus() == 200) {
                 String respnse = response.readEntity(String.class);
                 System.out.println("OK: " +  respnse);
-                return true;
+                // TODO: UREDI RESPNSE - kaj vrne penca?
+                respnse = "KLJUC";
+                return respnse;
             } else {
 
                 System.out.println("Response is not ok: " + response.getStatus());
-                return false;
+                return null;
             }
         } catch (Exception e) {
             System.out.println("Exception has occured"+ e.getMessage());
-            return false;
+            return null;
         } finally {
             if (null != multiPart) {
                 try {
