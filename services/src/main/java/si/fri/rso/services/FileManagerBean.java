@@ -11,13 +11,11 @@ import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.stream.FactoryConfigurationError;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 @ApplicationScoped
 public class FileManagerBean {
@@ -30,11 +28,7 @@ public class FileManagerBean {
 
     @PostConstruct
     private void init(){
-    }
-
-    public void uploadingNewFile() {
-        // TODO All the logic for new file upload.
-        System.out.println("Call upload file Bean");
+        this.httpClient = ClientBuilder.newClient();
     }
 
     public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetails,
@@ -62,8 +56,9 @@ public class FileManagerBean {
         System.out.println(user);
         System.out.println(channel);
 
+       file.delete();
+
         if (filePath != null){
-            // Poslji post zoro
             NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel);
             boolean isSaved = saveMetadata(newFile);
             return true;
@@ -75,7 +70,7 @@ public class FileManagerBean {
 
         try{
             Response success = httpClient
-                    .target(fileManagerConfigProperties.getCatalogApiUrl() + "/uploadMetadata")
+                    .target(fileManagerConfigProperties.getCatalogApiUrl() + "v1/file")
                     .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
 
             if (success.getStatus() == 200) {
@@ -91,7 +86,6 @@ public class FileManagerBean {
             return false;
         }
     }
-
 
 
     public Boolean deleteFile(Integer FileId, String path) {
