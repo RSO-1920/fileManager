@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rso1920-file-manager-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rso1920-file-manager
+  template:
+    metadata:
+      labels:
+        app: rso1920-file-manager
+    spec:
+      containers:
+        - image: rso1920/filemanager:latest
+          name: rso1920-file-manager
+          env:
+            - name: KUMULUZEE_DISCOVERY_ETCD_HOSTS
+              value: http://etcd:2379
+            - name: KUMULUZEE_CONFIG_ETCD_HOSTS
+              value: http://etcd:2379
+          ports:
+            - containerPort: 8088
+              name: file-manager
+              protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rso1920-file-manager
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8088
+      protocol: TCP
+      targetPort: file-manager
+  selector:
+    app: rso1920-file-manager
