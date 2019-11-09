@@ -1,5 +1,5 @@
 kumuluzee:
-  name: rso-file-manager
+  name: rso1920-file-manager
   version: 1.0.0
   env:
     name: dev
@@ -12,10 +12,15 @@ kumuluzee:
     max-retry-delay-ms: 900000
     etcd:
       hosts: http://localhost:2379
+  discovery:
+    etcd:
+      hosts: http://localhost:2379
+    ttl: 30
+    ping-interval: 5
 
 rest-config:
-  upload-catalog-api-url: http://localhost:8088/v1/fileMetadata
-  upload-file-storage-api-url: http://localhost:8080/v1/fileTransfer/storeFile
+  upload-catalog-api-uri: /v1/fileMetadata
+  upload-file-storage-api-uri: http://localhost:8080/v1/fileTransfer/storeFile
 
-  delete-catalog-api-url: http://localhost:8088/v1/fileMetadata
-  delete-file-storage-api-url: http://localhost:8080/v1/fileTransfer/storeFile
+  delete-catalog-api-uri: /v1/fileMetadata
+  delete-file-storage-api-uri: http://localhost:8080/v1/fileTransfer/storeFile

@@ -9,35 +9,35 @@ import javax.enterprise.context.ApplicationScoped;
 @ConfigBundle("rest-config")
 public class FileManagerConfigProperties {
 
-    @ConfigValue(value = "upload-catalog-api-url", watch = true)
-    private String catalogApiUrl;
+    @ConfigValue(value = "upload-catalog-api-uri", watch = true)
+    private String catalogApiUri;
 
-    @ConfigValue(value = "upload-file-storage-api-url", watch = true)
-    private  String fileStorageApiUrl;
+    @ConfigValue(value = "upload-file-storage-api-uri", watch = true)
+    private  String fileStorageApiUri;
 
-    @ConfigValue(value = "delete-catalog-api-url", watch = true)
-    private String deleteCatalogApiUrl;
+    @ConfigValue(value = "delete-catalog-api-uri", watch = true)
+    private String deleteCatalogApiUri;
 
-    public String getDeletecatalogApiUrl() {
-        return deleteCatalogApiUrl;
+    public String getDeletecatalogApiUri() {
+        return deleteCatalogApiUri;
     }
 
-    public void setDeleteCatalogApiUrl(String deleteCatalogApiUrl) {
-        this.deleteCatalogApiUrl = deleteCatalogApiUrl;
+    public void setDeleteCatalogApiUri(String deleteCatalogApiUrl) {
+        this.deleteCatalogApiUri = deleteCatalogApiUrl;
     }
 
-    public String getCatalogApiUrl() {
-        return this.catalogApiUrl;
+    public String getCatalogApiUri() {
+        return this.catalogApiUri;
     }
-    public void setCatalogApiUrl(String catalogApiUrl) {
-        this.catalogApiUrl = catalogApiUrl;
+    public void setCatalogApiUri(String catalogApiUri) {
+        this.catalogApiUri = catalogApiUri;
     }
 
-    public String getFileStorageApiUrl() {
-        return this.fileStorageApiUrl;
+    public String getFileStorageApiUri() {
+        return this.fileStorageApiUri;
     }
-    public void setFileStorageApiUrl(String fileStorageApiUrl) {
-        this.fileStorageApiUrl = fileStorageApiUrl;
+    public void setFileStorageApiUri(String fileStorageApiUri) {
+        this.fileStorageApiUri = fileStorageApiUri;
     }
 
 }

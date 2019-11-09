@@ -25,7 +25,7 @@ public class RequestSenderBean {
 
     String sendFileToUploadOnS3(File newFile){
         MultiPart multiPart = null;
-        String serverURL = fileManagerConfigProperties.getFileStorageApiUrl();
+        String serverURL = fileManagerConfigProperties.getFileStorageApiUri();
 
         System.out.println("Request url: " + serverURL);
         try {

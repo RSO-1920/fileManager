@@ -1,5 +1,6 @@
 package si.fri.rso.services;
 
+import com.kumuluz.ee.discovery.annotations.DiscoverService;
 import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import si.fri.rso.config.FileManagerConfigProperties;
@@ -7,6 +8,7 @@ import si.fri.rso.lib.responses.NewFileMetadata;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
@@ -16,13 +18,19 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.net.URL;
+import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class FileManagerBean {
 
     @Inject RequestSenderBean requestSenderBean;
 
     @Inject FileManagerConfigProperties fileManagerConfigProperties;
+
+    @Inject
+    @DiscoverService(value = "rso1920-catalog")
+    private Optional<String> fileMetadataUrl;
 
     private Client httpClient;
 
@@ -40,7 +48,8 @@ public class FileManagerBean {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String filePath =  requestSenderBean.sendFileToUploadOnS3(file);
+        // TODO: call when rdy.
+        String filePath =  "new file path"; // requestSenderBean.sendFileToUploadOnS3(file);
         //"c://bla//file.jpg"
 
         String [] nameType = fileDetails.getFileName().split("\\.");
@@ -64,10 +73,12 @@ public class FileManagerBean {
     }
 
     private boolean saveMetadata(NewFileMetadata newFile){
-
+        if (!fileMetadataUrl.isPresent())
+            return false;
+        System.out.println("Saving metadata: " + fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogApiUri());
         try{
             Response success = httpClient
-                    .target(fileManagerConfigProperties.getCatalogApiUrl())
+                    .target(fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogApiUri())
                     .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
 
             if (success.getStatus() == 200) {
@@ -78,7 +89,7 @@ public class FileManagerBean {
                 return false;
             }
         }catch (WebApplicationException | ProcessingException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             System.out.println("api for metadata upload failed miserably");
             return false;
         }
@@ -88,13 +99,15 @@ public class FileManagerBean {
     //  2. upload penca
     //  3. delete zoro
     //  4. delete penca
-    public Boolean deleteFile(Integer FileId, String path) {
+    public boolean deleteFile(Integer FileId, String path) {
         String target = "";
         if (path.equals("storage")){
-            target = this.fileManagerConfigProperties.getFileStorageApiUrl() + "/" + FileId;
+            target = this.fileManagerConfigProperties.getFileStorageApiUri() + "/" + FileId;
         }
         else if (path.equals("catalog")){
-            target = this.fileManagerConfigProperties.getDeletecatalogApiUrl() +
+            if (!fileMetadataUrl.isPresent())
+                return false;
+            target = fileMetadataUrl.get() + fileManagerConfigProperties.getDeletecatalogApiUri() +
                     "/" +
                     FileId;
         }
@@ -113,7 +126,7 @@ public class FileManagerBean {
                 return false;
             }
         }catch (WebApplicationException | ProcessingException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             System.out.println("api not reachable: " + path);
             return false;
         }
