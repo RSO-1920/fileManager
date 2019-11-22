@@ -1,7 +1,9 @@
 package si.fri.rso.api.v1.controller;
 
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.glassfish.jersey.media.multipart.*;
 import si.fri.rso.services.FileManagerBean;
@@ -22,6 +24,10 @@ public class FileManagerController {
     @Inject
     private FileManagerBean fileManagerBean;
 
+    @Inject
+    @Metric(name = "upload_file_histogram")
+    Histogram uploadFilehistogram;
+
     @POST
     @Timed(name = "file_manager_time_upload")
     @Counted(name = "file_manager_counted_upload")
@@ -34,6 +40,13 @@ public class FileManagerController {
                                @FormDataParam("file") FormDataContentDisposition fileDetails,
                                @FormDataParam("integerUser") Integer userId,
                                @FormDataParam("integerChannel") Integer channelId) {
+
+        try {
+            uploadFilehistogram.update(uploadedInputStream.read());
+        } catch (Exception e) {
+            System.out.println("histogram failed");
+        }
+
         if (userId == null || channelId == null){
             return Response.status(500).entity("Error uploading file.. user or channel is null").build();
         }
