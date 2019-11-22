@@ -1,6 +1,8 @@
 package si.fri.rso.api.v1;
 
 import com.kumuluz.ee.discovery.annotations.RegisterService;
+import com.kumuluz.ee.health.HealthRegistry;
+import com.kumuluz.ee.health.enums.HealthCheckType;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import si.fri.rso.api.v1.controller.FileManagerController;
 
@@ -17,6 +19,7 @@ public class FileManager extends Application {
         final Set<Class<?>> resources = new HashSet<Class<?>>();
         resources.add(MultiPartFeature.class);
         resources.add(FileManagerController.class);
+        HealthRegistry.getInstance().register(AmazonS3Check.class.getSimpleName(), new AmazonS3Check(), HealthCheckType.LIVENESS);
         return resources;
     }
 }

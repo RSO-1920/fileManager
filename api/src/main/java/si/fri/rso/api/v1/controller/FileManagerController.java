@@ -1,5 +1,8 @@
 package si.fri.rso.api.v1.controller;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.glassfish.jersey.media.multipart.*;
 import si.fri.rso.services.FileManagerBean;
 
@@ -14,13 +17,15 @@ import java.io.*;
 @ApplicationScoped
 @Path("/file")
 
-
 public class FileManagerController {
 
     @Inject
     private FileManagerBean fileManagerBean;
 
     @POST
+    @Timed(name = "file_manager_time_upload")
+    @Counted(name = "file_manager_counted_upload")
+    @Metered(name = "file_manager_metered_upload")
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +49,9 @@ public class FileManagerController {
 
 
     @DELETE
+    @Timed(name = "file_manager_time_delete")
+    @Counted(name = "file_manager_counted_delete")
+    @Metered(name = "file_manager_metered_delete")
     @Path("delete")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
