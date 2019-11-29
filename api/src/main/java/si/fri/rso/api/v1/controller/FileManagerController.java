@@ -1,5 +1,6 @@
 package si.fri.rso.api.v1.controller;
 
+import com.kumuluz.ee.logs.cdi.Log;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Metered;
@@ -16,9 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 
+@Log
 @ApplicationScoped
 @Path("/file")
-
 public class FileManagerController {
 
     @Inject
