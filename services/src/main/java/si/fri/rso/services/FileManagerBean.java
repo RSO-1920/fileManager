@@ -40,7 +40,7 @@ public class FileManagerBean {
     }
 
     public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetails,
-                              Integer [] userChannel) {
+                              Integer [] userChannel, String requestUniqueID) {
         File file = new File(fileDetails.getFileName());
 
         try {
@@ -66,20 +66,23 @@ public class FileManagerBean {
 
         if (filePath != null){
             NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel);
-            boolean isSaved = saveMetadata(newFile);
+            boolean isSaved = saveMetadata(newFile, requestUniqueID);
             return true;
         }
         return false;
     }
 
-    private boolean saveMetadata(NewFileMetadata newFile){
+    private boolean saveMetadata(NewFileMetadata newFile, String requestUniqueID){
         if (!fileMetadataUrl.isPresent())
             return false;
         System.out.println("Saving metadata: " + fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogApiUri());
+        System.out.println("REQUEST: " + requestUniqueID);
         try{
             Response success = httpClient
                     .target(fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogApiUri())
-                    .request(MediaType.APPLICATION_JSON_TYPE).post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("uniqueRequestId", requestUniqueID)
+                    .post( Entity.entity(newFile, MediaType.APPLICATION_JSON_TYPE));
 
             if (success.getStatus() == 200) {
                 System.out.println("Meta data about file was uploaded");
@@ -99,7 +102,7 @@ public class FileManagerBean {
     //  2. upload penca
     //  3. delete zoro
     //  4. delete penca
-    public boolean deleteFile(Integer FileId, String path) {
+    public boolean deleteFile(Integer FileId, String path, String requestUniqueID) {
         String target = "";
         if (path.equals("storage")){
             target = this.fileManagerConfigProperties.getFileStorageApiUri() + "/" + FileId;
@@ -116,7 +119,9 @@ public class FileManagerBean {
         try{
             Response success = httpClient
                     .target(target)
-                    .request(MediaType.APPLICATION_JSON_TYPE).delete();
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("uniqueRequestId", requestUniqueID)
+                    .delete();
 
             if (success.getStatus() == 200) {
                 System.out.println("File deletion success: " + path);

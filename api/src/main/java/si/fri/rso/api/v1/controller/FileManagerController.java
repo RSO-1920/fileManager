@@ -11,11 +11,13 @@ import si.fri.rso.services.FileManagerBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.util.UUID;
 
 @Log
 @ApplicationScoped
@@ -24,6 +26,9 @@ public class FileManagerController {
 
     @Inject
     private FileManagerBean fileManagerBean;
+
+    @Inject
+    HttpServletRequest requestheader;
 
     @Inject
     @Metric(name = "upload_file_histogram")
@@ -53,7 +58,9 @@ public class FileManagerController {
         }
         Integer [] userChannel = new Integer[] {userId, channelId};
 
-        boolean isSuccess = fileManagerBean.uploadFile(uploadedInputStream, fileDetails, userChannel);
+        String requestHeader = requestheader.getHeader("uniqueRequestId");
+
+        boolean isSuccess = fileManagerBean.uploadFile(uploadedInputStream, fileDetails, userChannel, requestHeader != null ? requestHeader : UUID.randomUUID().toString());
 
         if (isSuccess) {
             return Response.ok(isSuccess).build();
@@ -74,9 +81,12 @@ public class FileManagerController {
         if (fileId == null){
             return Response.status(444, "File id not found! ").build();
         }
+        String requestHeader = requestheader.getHeader("uniqueRequestId");
         System.out.println("Deleting file: "+ fileId);
-        if (fileManagerBean.deleteFile(fileId, "catalog")){
-            if (fileManagerBean.deleteFile(fileId, "storage")){
+        requestHeader = requestHeader != null ? requestHeader : UUID.randomUUID().toString();
+
+        if (fileManagerBean.deleteFile(fileId, "catalog", requestHeader)){
+            if (fileManagerBean.deleteFile(fileId, "storage", requestHeader)){
                 return Response.ok("File Deleted!").build();
             }
             else{
