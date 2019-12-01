@@ -18,9 +18,8 @@ public class FileManagerConfigProperties {
     @ConfigValue(value = "delete-catalog-api-uri", watch = true)
     private String deleteCatalogApiUri;
 
-    public String getDeletecatalogApiUri() {
-        return deleteCatalogApiUri;
-    }
+    @ConfigValue(value = "channel-uri", watch = true)
+    private String channelUri;
 
     public void setDeleteCatalogApiUri(String deleteCatalogApiUrl) {
         this.deleteCatalogApiUri = deleteCatalogApiUrl;
@@ -40,4 +39,15 @@ public class FileManagerConfigProperties {
         this.fileStorageApiUri = fileStorageApiUri;
     }
 
+    public String getChannelUri() {
+        return channelUri;
+    }
+
+    public void setChannelUri(String channelUri) {
+        this.channelUri = channelUri;
+    }
+
+    public String getDeleteCatalogApiUri() {
+        return deleteCatalogApiUri;
+    }
 }

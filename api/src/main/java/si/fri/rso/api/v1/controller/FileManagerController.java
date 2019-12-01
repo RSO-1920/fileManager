@@ -68,7 +68,6 @@ public class FileManagerController {
         return Response.status(500).entity("Error uploading file.. some of the service unreachable").build();
     }
 
-
     @DELETE
     @Timed(name = "file_manager_time_delete")
     @Counted(name = "file_manager_counted_delete")
@@ -86,6 +85,8 @@ public class FileManagerController {
         requestHeader = requestHeader != null ? requestHeader : UUID.randomUUID().toString();
 
         if (fileManagerBean.deleteFile(fileId, "catalog", requestHeader)){
+
+            // TODO delete file from S3 storage..
             if (fileManagerBean.deleteFile(fileId, "storage", requestHeader)){
                 return Response.ok("File Deleted!").build();
             }
