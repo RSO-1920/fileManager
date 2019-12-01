@@ -7,9 +7,7 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import si.fri.rso.config.FileManagerConfigProperties;
-import si.fri.rso.lib.responses.ChannelBucketName;
-import si.fri.rso.lib.responses.DTO;
-import si.fri.rso.lib.responses.NewFileMetadata;
+import si.fri.rso.lib.responses.*;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -123,6 +121,39 @@ public class RequestSenderBean {
             return false;
         }
     }
+
+    public CatalogFileMetadata getFileMetadata(Integer fileId, String requestUniqueID){
+        if (!fileMetadataUrl.isPresent()){
+            System.out.println("catalog api url not set");
+            return null;
+        }
+
+        System.out.println("getting file metadata: " + fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogUri() + "/" + fileId);
+        System.out.println("REQUEST: " + requestUniqueID);
+        try{
+            Response success = httpClient
+                    .target(fileMetadataUrl.get() + fileManagerConfigProperties.getCatalogUri() + "/" + fileId)
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header("uniqueRequestId", requestUniqueID)
+                    .get();
+
+            if (success.getStatus() == 200) {
+                System.out.println("file metadata found");
+                Gson gson = new Gson();
+                CatalogFileMetadata  fileMetadata = (CatalogFileMetadata) gson.fromJson(success.readEntity(String.class), DTOCatalog.class).getData();
+                System.out.println(fileMetadata.getFileName());
+                return fileMetadata;
+            } else {
+                System.out.println("file metadata not fouond");
+                return null;
+            }
+        }catch (WebApplicationException | ProcessingException e) {
+            // e.printStackTrace();
+            System.out.println("getting file metadata failed");
+            return null;
+        }
+    }
+
 
     public ChannelBucketName getBucketName(Integer channelId, String requestID) {
         if (!this.channelUrl.isPresent()) {

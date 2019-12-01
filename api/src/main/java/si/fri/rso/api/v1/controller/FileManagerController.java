@@ -7,7 +7,10 @@ import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.glassfish.jersey.media.multipart.*;
+import si.fri.rso.lib.responses.CatalogFileMetadata;
+import si.fri.rso.lib.responses.ChannelBucketName;
 import si.fri.rso.services.FileManagerBean;
+import si.fri.rso.services.RequestSenderBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +29,9 @@ public class FileManagerController {
 
     @Inject
     private FileManagerBean fileManagerBean;
+
+    @Inject
+    private RequestSenderBean requestSenderBean;
 
     @Inject
     HttpServletRequest requestheader;
@@ -75,19 +81,25 @@ public class FileManagerController {
     @Path("delete")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response DeleteFile(@QueryParam("fileId") Integer fileId) {
-        System.out.println("FILEID: "+ fileId);
-        if (fileId == null){
-            return Response.status(444, "File id not found! ").build();
+    public Response DeleteFile(@QueryParam("fileId") Integer fileId, @QueryParam("channelId") Integer channelId) {
+        System.out.println("FILEID: "+ fileId + "  CHANNELID: " + channelId);
+        if (fileId == null || channelId == null){
+            return Response.status(444, "File id od channel id was not given! ").build();
         }
+
         String requestHeader = requestheader.getHeader("uniqueRequestId");
         System.out.println("Deleting file: "+ fileId);
         requestHeader = requestHeader != null ? requestHeader : UUID.randomUUID().toString();
 
-        if (fileManagerBean.deleteFile(fileId, "catalog", requestHeader)){
+        ChannelBucketName bucket = this.requestSenderBean.getBucketName(channelId, requestHeader);
+        CatalogFileMetadata file = this.requestSenderBean.getFileMetadata(fileId, requestHeader);
 
-            // TODO delete file from S3 storage..
-            if (fileManagerBean.deleteFile(fileId, "storage", requestHeader)){
+        if (bucket== null || file == null || bucket.getBucketName() == null || file.getFileName() == null) {
+            return Response.status(400, "bucket and file name for given ids not found").build();
+        }
+
+        if (fileManagerBean.deleteFile(fileId, "catalog",requestHeader, bucket.getBucketName(), file.getFileName())){
+            if (fileManagerBean.deleteFile(fileId, "storage", requestHeader, bucket.getBucketName(), file.getFileName())){
                 return Response.ok("File Deleted!").build();
             }
             else{

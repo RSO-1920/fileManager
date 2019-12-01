@@ -84,10 +84,13 @@ public class FileManagerBean {
     //  2. upload penca
     //  3. delete zoro
     //  4. delete penca
-    public boolean deleteFile(Integer FileId, String path, String requestUniqueID) {
+    public boolean deleteFile(Integer FileId, String path, String requestUniqueID, String bucketName, String fileName) {
         String target = "";
         if (path.equals("storage")){
             // TODO send request for file storage deletion..
+            System.out.println("STORAGE DELETION");
+            System.out.println("bucket name: " + bucketName + " filename: " + fileName);
+
             target = this.fileManagerConfigProperties.getFileStorageApiUri() + "/" + FileId;
         }
         else if (path.equals("catalog")){

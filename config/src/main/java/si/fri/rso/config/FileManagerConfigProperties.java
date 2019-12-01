@@ -21,6 +21,10 @@ public class FileManagerConfigProperties {
     @ConfigValue(value = "channel-uri", watch = true)
     private String channelUri;
 
+    @ConfigValue(value = "catalog-uri", watch = true)
+    private String catalogUri;
+
+
     public void setDeleteCatalogApiUri(String deleteCatalogApiUrl) {
         this.deleteCatalogApiUri = deleteCatalogApiUrl;
     }
@@ -49,5 +53,13 @@ public class FileManagerConfigProperties {
 
     public String getDeleteCatalogApiUri() {
         return deleteCatalogApiUri;
+    }
+
+    public String getCatalogUri() {
+        return catalogUri;
+    }
+
+    public void setCatalogUri(String catalogUri) {
+        this.catalogUri = catalogUri;
     }
 }

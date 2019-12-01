@@ -47,6 +47,7 @@ kumuluzee:
                       </Configuration>'
 rest-config:
   channel-uri: /v1/channels
+  catalog-uri: /v1/fileMetadata
 
   upload-catalog-api-uri: /v1/fileMetadata
   upload-file-storage-api-uri: /v1/fileTransfer
