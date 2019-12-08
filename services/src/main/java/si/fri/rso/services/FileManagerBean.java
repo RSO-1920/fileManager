@@ -33,6 +33,10 @@ public class FileManagerBean {
     @DiscoverService(value = "rso1920-catalog")
     private Optional<String> fileMetadataUrl;
 
+    @Inject
+    @DiscoverService(value = "rso1920-fileStorage")
+    private Optional<String> fileStorageUrl;
+
 
     private Client httpClient;
 
@@ -91,7 +95,11 @@ public class FileManagerBean {
             System.out.println("STORAGE DELETION");
             System.out.println("bucket name: " + bucketName + " filename: " + fileName);
 
-            target = this.fileManagerConfigProperties.getFileStorageApiUri() + "/" + FileId;
+            if (!this.fileStorageUrl.isPresent()) {
+                return false;
+            }
+
+            target = this.fileStorageUrl.get() + this.fileManagerConfigProperties.getDeleteFileStorageUri() + "/" + bucketName + "/" + fileName;
         }
         else if (path.equals("catalog")){
             if (!fileMetadataUrl.isPresent())

@@ -53,4 +53,4 @@ rest-config:
   upload-file-storage-api-uri: /v1/fileTransfer
 
   delete-catalog-api-uri: /v1/fileMetadata
-  delete-file-storage-api-uri: http://localhost:8080/v1/fileTransfer/storeFile
+  delete-file-storage-api-uri: /v1/fileTransfer

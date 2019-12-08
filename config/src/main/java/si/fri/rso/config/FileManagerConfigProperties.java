@@ -15,6 +15,9 @@ public class FileManagerConfigProperties {
     @ConfigValue(value = "upload-file-storage-api-uri", watch = true)
     private  String fileStorageApiUri;
 
+    @ConfigValue(value = "delete-file-storage-api-uri", watch = true)
+    private  String deleteFileStorageUri;
+
     @ConfigValue(value = "delete-catalog-api-uri", watch = true)
     private String deleteCatalogApiUri;
 
@@ -58,8 +61,15 @@ public class FileManagerConfigProperties {
     public String getCatalogUri() {
         return catalogUri;
     }
-
     public void setCatalogUri(String catalogUri) {
         this.catalogUri = catalogUri;
+    }
+
+    public String getDeleteFileStorageUri() {
+        return deleteFileStorageUri;
+    }
+
+    public void setDeleteFileStorageUri(String deleteFileStorageUri) {
+        this.deleteFileStorageUri = deleteFileStorageUri;
     }
 }
