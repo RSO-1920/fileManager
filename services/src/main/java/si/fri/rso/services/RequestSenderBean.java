@@ -2,6 +2,9 @@ package si.fri.rso.services;
 
 import com.google.gson.Gson;
 import com.kumuluz.ee.discovery.annotations.DiscoverService;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -11,6 +14,7 @@ import si.fri.rso.lib.responses.*;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
@@ -22,9 +26,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-@ApplicationScoped
+@RequestScoped
 public class RequestSenderBean {
 
     @Inject
@@ -49,7 +54,11 @@ public class RequestSenderBean {
         this.httpClient = ClientBuilder.newClient();
     }
 
-    public boolean sendFileToUploadOnS3(File newFile, String bucketName, String fileName, String requestId){
+
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+    @CircuitBreaker(requestVolumeThreshold = 3)
+    @Fallback(S3FallbackUpload.class)
+    public Boolean sendFileToUploadOnS3(File newFile, String bucketName, String fileName, String requestId) {
         if (!fileStorageUrl.isPresent()) {
             System.out.println("file storage url not present");
             return false;
