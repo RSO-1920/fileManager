@@ -54,7 +54,7 @@ public class FileManagerController {
                                @FormDataParam("integerChannel") Integer channelId) {
 
         try {
-            uploadFilehistogram.update(uploadedInputStream.read());
+            uploadFilehistogram.update(uploadedInputStream.available());
         } catch (Exception e) {
             System.out.println("histogram failed");
         }
@@ -103,7 +103,7 @@ public class FileManagerController {
                 return Response.ok("File Deleted!").build();
             }
             else{
-                return Response.status(400, "Error while deleting file in S3 storage!").build();
+                return Response.status(200, "Error while deleting file in S3 storage!").build();
             }
         }
         else{
