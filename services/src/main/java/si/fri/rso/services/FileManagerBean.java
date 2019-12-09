@@ -20,6 +20,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RequestScoped
@@ -37,6 +39,8 @@ public class FileManagerBean {
     @DiscoverService(value = "rso1920-fileStorage")
     private Optional<String> fileStorageUrl;
 
+    @Inject
+    private  AWSClient awsClient;
 
     private Client httpClient;
 
@@ -65,7 +69,6 @@ public class FileManagerBean {
 
         System.out.println("channel bucket name: " + channelBucketName.getBucketName());
 
-
         boolean isFileUploaded = requestSenderBean.sendFileToUploadOnS3(file, channelBucketName.getBucketName(), fileDetails.getFileName(), requestUniqueID);
 
         if (!isFileUploaded) {
@@ -73,13 +76,19 @@ public class FileManagerBean {
             return false;
         }
 
+        ArrayList<String> filelabels = null;
+        if (fileType.toLowerCase().equals("jpg") || fileType.toLowerCase().equals("png")) {
+            filelabels = awsClient.ImageLabels(fileDetails.getFileName(), channelBucketName.getBucketName());
+            System.out.println(Arrays.toString(filelabels.toArray()));
+        }
+
         boolean isDeleted = file.delete();
         if(!isDeleted){
            System.out.println("File was not deleted!");
         }
         String filePath =  channelBucketName.getBucketName() + "/" + fileDetails.getFileName(); //
-        NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel);
-
+        NewFileMetadata newFile = new NewFileMetadata(filePath, fileDetails.getFileName(), fileType, user, channel, filelabels);
+        System.out.println("new file metadata upload");
         return requestSenderBean.saveMetadata(newFile, requestUniqueID);
     }
 

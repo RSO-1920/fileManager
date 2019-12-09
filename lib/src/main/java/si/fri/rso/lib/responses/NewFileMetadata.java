@@ -1,6 +1,7 @@
 package si.fri.rso.lib.responses;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.ArrayList;
 
 public class NewFileMetadata {
     private String filePath;
@@ -8,14 +9,16 @@ public class NewFileMetadata {
     private String fileType;
     private Integer userId;
     private Integer channelId;
+    private ArrayList<String> fileLabels;
 
-    public NewFileMetadata(String filePath, String fileName, String fileType, Integer userId, Integer channelId){
+    public NewFileMetadata(String filePath, String fileName, String fileType, Integer userId, Integer channelId, ArrayList<String> fileLabels){
 
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileType = fileType;
         this.userId = userId;
         this.channelId = channelId;
+        this.fileLabels = fileLabels;
 
     }
 
@@ -39,6 +42,10 @@ public class NewFileMetadata {
         return channelId;
     }
 
+    public ArrayList<String> getFileLabels() {
+        return fileLabels;
+    }
+
     public void setUserId(Integer user_id) {
         this.userId = user_id;
     }
@@ -57,5 +64,9 @@ public class NewFileMetadata {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public void setFileLabels(ArrayList<String> fileLabels) {
+        this.fileLabels = fileLabels;
     }
 }

@@ -54,3 +54,7 @@ rest-config:
 
   delete-catalog-api-uri: /v1/fileMetadata
   delete-file-storage-api-uri: /v1/fileTransfer
+app-properties:
+  amazon-rekognition:
+    access-key: accessKey
+    secret-key: secretKey
