@@ -1,6 +1,11 @@
 package si.fri.rso.api.v1.controller;
 
 import com.kumuluz.ee.logs.cdi.Log;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Metered;
@@ -41,6 +46,16 @@ public class FileManagerController {
     Histogram uploadFilehistogram;
 
     @POST
+    @Operation(description = "Upload file", summary = "upload", tags = "upload", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "upload file success",
+                    content = @Content(schema = @Schema(implementation = Boolean.class))
+            ),
+            @ApiResponse(responseCode = "500",
+                    description = "error",
+                    content = @Content(schema = @Schema(implementation = String.class))
+            ),
+    })
     @Timed(name = "file_manager_time_upload")
     @Counted(name = "file_manager_counted_upload")
     @Metered(name = "file_manager_metered_upload")
@@ -75,6 +90,20 @@ public class FileManagerController {
     }
 
     @DELETE
+    @Operation(description = "Delete file", summary = "delete", tags = "delete", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "delete file succes",
+                    content = @Content(schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "400",
+                    description = "error deleting files",
+                    content = @Content(schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "444",
+                    description = "missing delete params",
+                    content = @Content(schema = @Schema(implementation = String.class))
+            ),
+    })
     @Timed(name = "file_manager_time_delete")
     @Counted(name = "file_manager_counted_delete")
     @Metered(name = "file_manager_metered_delete")

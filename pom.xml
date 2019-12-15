@@ -34,6 +34,7 @@
 
         <kumuluzee-fault-tolerance.version>2.0.1</kumuluzee-fault-tolerance.version>
         <aws.version>1.11.668</aws.version>
+        <kumuluzee-openapi.version>1.0.1</kumuluzee-openapi.version>
     </properties>
 
     <dependencyManagement>
@@ -137,6 +138,17 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
             <version>${aws.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kumuluz.ee.openapi</groupId>
+            <artifactId>kumuluzee-openapi</artifactId>
+            <version>${kumuluzee-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee.openapi</groupId>
+            <artifactId>kumuluzee-openapi-ui</artifactId>
+            <version>${kumuluzee-openapi.version}</version>
         </dependency>
 
     </dependencies>
