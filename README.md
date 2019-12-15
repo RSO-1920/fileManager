@@ -25,6 +25,6 @@ it is a file Manager
 ```
 http://localhost:8089/api-specs/v1/openapi.json
 ```
-```aidl
+```
 http://localhost:8089/api-specs/ui/?url=http://localhost:8089/api-specs/v1/openapi.json
 ```
