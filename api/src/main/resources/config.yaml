@@ -45,6 +45,12 @@ kumuluzee:
                               </Root>
                           </Loggers>
                       </Configuration>'
+  grpc:
+    clients:
+      - name: client1
+        port: 9001
+        address: localhost
+
 rest-config:
   channel-uri: /v1/channels
   catalog-uri: /v1/fileMetadata

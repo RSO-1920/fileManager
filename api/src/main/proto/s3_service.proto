@@ -1,0 +1,16 @@
+syntax = "proto3";
+option java_package = "grpc";
+
+service S3 {
+    rpc deleteFileOnBucket(S3DeleteFileOnBucketRequest) returns (S3DeleteFileOnBucketResponse) {};
+}
+
+message S3DeleteFileOnBucketRequest {
+    string bucketname = 1;
+    string filename = 2;
+}
+
+message S3DeleteFileOnBucketResponse {
+    string responsemsg = 1;
+    bool responsestatus = 2;
+}

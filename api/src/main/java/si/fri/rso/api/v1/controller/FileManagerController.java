@@ -1,6 +1,7 @@
 package si.fri.rso.api.v1.controller;
 
 import com.kumuluz.ee.logs.cdi.Log;
+import grpc.client.S3ServiceClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +32,9 @@ import java.util.UUID;
 @ApplicationScoped
 @Path("/file")
 public class FileManagerController {
+
+    @Inject
+    private S3ServiceClient s3ServiceClientGRPC;
 
     @Inject
     private FileManagerBean fileManagerBean;
@@ -128,9 +132,15 @@ public class FileManagerController {
         }
 
         if (fileManagerBean.deleteFile(fileId, "catalog",requestHeader, bucket.getBucketName(), file.getFileName())){
-            if (fileManagerBean.deleteFile(fileId, "storage", requestHeader, bucket.getBucketName(), file.getFileName())){
+
+            /*if (fileManagerBean.deleteFile(fileId, "storage", requestHeader, bucket.getBucketName(), file.getFileName())){
+                return Response.ok("File Deleted!").build();
+            }*/
+
+            if (s3ServiceClientGRPC.deleteFile(bucket.getBucketName(), file.getFileName())) {
                 return Response.ok("File Deleted!").build();
             }
+
             else{
                 return Response.status(200, "Error while deleting file in S3 storage!").build();
             }

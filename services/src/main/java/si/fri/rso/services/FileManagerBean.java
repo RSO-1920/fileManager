@@ -92,15 +92,9 @@ public class FileManagerBean {
         return requestSenderBean.saveMetadata(newFile, requestUniqueID);
     }
 
-
-    //  1. upload zoro
-    //  2. upload penca
-    //  3. delete zoro
-    //  4. delete penca
     public boolean deleteFile(Integer FileId, String path, String requestUniqueID, String bucketName, String fileName) {
         String target = "";
         if (path.equals("storage")){
-            // TODO send request for file storage deletion..
             System.out.println("STORAGE DELETION");
             System.out.println("bucket name: " + bucketName + " filename: " + fileName);
 
@@ -117,6 +111,7 @@ public class FileManagerBean {
                     "/" +
                     FileId;
         }
+
         System.out.println("Target je "+ path);
         System.out.println("Ciljam: "+ target);
         try{
@@ -138,6 +133,7 @@ public class FileManagerBean {
             System.out.println("api not reachable: " + path);
             return false;
         }
-    }
 
+
+    }
 }
