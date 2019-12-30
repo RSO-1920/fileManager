@@ -21,9 +21,11 @@ spec:
             - name: KUMULUZEE_CONFIG_ETCD_HOSTS
               value: http://etcd:2379
             - name: KUMULUZEE_SERVER_BASEURL
-              value: http://10.28.2.251:8089
+              value: http://10.0.6.187:8089
             - name: KUMULUZEE_HEALTH_CHECKS_ETCDHEALTHCHECK_CONNECTIONURL
               value: http://etcd:2379/health
+            - name: KUMULUZEE_GRPC_CLIENTS0_ADDRESS
+              value: 10.0.8.185
           ports:
             - containerPort: 8089
               name: file-manager

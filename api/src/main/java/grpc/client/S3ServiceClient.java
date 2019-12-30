@@ -23,6 +23,9 @@ public class S3ServiceClient {
         try {
             GrpcChannels clientPool = GrpcChannels.getInstance();
             GrpcChannelConfig config = clientPool.getGrpcClientConfig("client1");
+            System.out.println("CONFIG GRPC");
+            System.out.println(config.getAddress());
+            System.out.println(config.getPort());
             GrpcClient client = new GrpcClient(config);
             s3Stub = S3Grpc.newBlockingStub(client.getChannel());
         } catch (SSLException e) {
