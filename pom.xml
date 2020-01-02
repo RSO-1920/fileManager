@@ -37,6 +37,8 @@
         <kumuluzee-openapi.version>1.0.1</kumuluzee-openapi.version>
         <grpc.version>1.18.0</grpc.version>
         <kumuluzee.grpc.version>1.1.0</kumuluzee.grpc.version>
+
+        <kumuluzee-cors.varsion>1.1.0-SNAPSHOT</kumuluzee-cors.varsion>
     </properties>
 
     <repositories>
@@ -170,6 +172,11 @@
             <groupId>com.kumuluz.ee.openapi</groupId>
             <artifactId>kumuluzee-openapi-ui</artifactId>
             <version>${kumuluzee-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee.cors</groupId>
+            <artifactId>kumuluzee-cors</artifactId>
+            <version>${kumuluzee-cors.varsion}</version>
         </dependency>
     </dependencies>
 </project>

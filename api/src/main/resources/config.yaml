@@ -7,6 +7,10 @@ kumuluzee:
     base-url: http://localhost:8089/
     http:
       port: 8089
+  cors-filter:
+    servlet:
+      allow-generic-http-requests: true
+      allow-origin: "*"
   config:
     start-retry-delay-ms: 500
     max-retry-delay-ms: 900000
