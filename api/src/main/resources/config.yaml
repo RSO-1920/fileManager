@@ -11,6 +11,7 @@ kumuluzee:
     servlet:
       allow-generic-http-requests: true
       allow-origin: "*"
+      supported-methods: "GET, POST, HEAD, OPTIONS, PUT, DELETE"
   config:
     start-retry-delay-ms: 500
     max-retry-delay-ms: 900000
