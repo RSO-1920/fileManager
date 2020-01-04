@@ -50,7 +50,7 @@ public class FileManagerBean {
     }
 
     public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetails,
-                              Integer [] userChannel, String requestUniqueID) {
+                              String userId, Integer channelId, String requestUniqueID) {
         File file = new File(fileDetails.getFileName());
 
         try {
@@ -62,8 +62,8 @@ public class FileManagerBean {
         String [] nameType = fileDetails.getFileName().split("\\.");
 
         String fileType = nameType[nameType.length-1];
-        Integer user = userChannel[0];
-        Integer channel = userChannel[1];
+        String user = userId;
+        Integer channel = channelId;
 
         ChannelBucketName channelBucketName = this.requestSenderBean.getBucketName(channel, requestUniqueID);
 

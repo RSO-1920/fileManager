@@ -7,11 +7,11 @@ public class NewFileMetadata {
     private String filePath;
     private String fileName;
     private String fileType;
-    private Integer userId;
+    private String userId;
     private Integer channelId;
     private ArrayList<String> fileLabels;
 
-    public NewFileMetadata(String filePath, String fileName, String fileType, Integer userId, Integer channelId, ArrayList<String> fileLabels){
+    public NewFileMetadata(String filePath, String fileName, String fileType, String userId, Integer channelId, ArrayList<String> fileLabels){
 
         this.filePath = filePath;
         this.fileName = fileName;
@@ -19,7 +19,6 @@ public class NewFileMetadata {
         this.userId = userId;
         this.channelId = channelId;
         this.fileLabels = fileLabels;
-
     }
 
     public String getFilePath() {
@@ -34,7 +33,7 @@ public class NewFileMetadata {
         return fileType;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -46,7 +45,7 @@ public class NewFileMetadata {
         return fileLabels;
     }
 
-    public void setUserId(Integer user_id) {
+    public void setUserId(String user_id) {
         this.userId = user_id;
     }
 

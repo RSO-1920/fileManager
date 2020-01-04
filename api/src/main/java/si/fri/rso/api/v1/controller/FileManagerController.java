@@ -69,7 +69,7 @@ public class FileManagerController {
     public Response uploadFile(@NotEmpty
                                @FormDataParam("file") InputStream uploadedInputStream,
                                @FormDataParam("file") FormDataContentDisposition fileDetails,
-                               @FormDataParam("integerUser") Integer userId,
+                               @FormDataParam("integerUser") String userId,
                                @FormDataParam("integerChannel") Integer channelId) {
 
         try {
@@ -81,11 +81,10 @@ public class FileManagerController {
         if (userId == null || channelId == null){
             return Response.status(500).entity("Error uploading file.. user or channel is null").build();
         }
-        Integer [] userChannel = new Integer[] {userId, channelId};
 
         String requestHeader = requestheader.getHeader("uniqueRequestId");
 
-        boolean isSuccess = fileManagerBean.uploadFile(uploadedInputStream, fileDetails, userChannel, requestHeader != null ? requestHeader : UUID.randomUUID().toString());
+        boolean isSuccess = fileManagerBean.uploadFile(uploadedInputStream, fileDetails, userId, channelId ,requestHeader != null ? requestHeader : UUID.randomUUID().toString());
 
         if (isSuccess) {
             return Response.ok(isSuccess).build();
